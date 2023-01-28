@@ -4,6 +4,10 @@ const database = require("../db/db.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
+router.get("/someRoute", authenticate, (req, res) => {
+  response.json({ message: `Welcome ${request.user.username}!` });
+});
+
 router.post("/users", (request, response) => {
   const { user } = request.body;
   bcrypt.hash(user.password, 12).then((hashed_password) => {
