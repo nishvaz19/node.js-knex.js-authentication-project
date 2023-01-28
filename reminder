@@ -1,0 +1,15 @@
+Apply the migrations.
+
+npx knex migrate:latest
+
+If required, migrations can be rolled back with the following command:
+
+npx knex migrate:rollback
+
+11. Create seeds. Seed files allow you to populate your database with test or seed data independent of your migration files.
+
+npx knex seed:make seed_name
+
+To run seed files, execute:
+
+npx knex seed:run
