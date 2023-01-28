@@ -4,16 +4,17 @@ const database = require("../db/db.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-router.get("/someRoute", authenticate, (req, res) => {
+router.get("/someRoute", authenticate, (request, response) => {
   response.json({ message: `Welcome ${request.user.username}!` });
 });
 
 router.post("/users", (request, response) => {
-  const { user } = request.body;
-  bcrypt.hash(user.password, 12).then((hashed_password) => {
+  const { password, username } = request.body;
+  console.log("password", password);
+  bcrypt.hash(password, 12).then((hashed_password) => {
     return database("users")
       .insert({
-        username: user.username,
+        username: username,
         password_hash: hashed_password,
       })
       .returning("*")
@@ -27,38 +28,41 @@ router.post("/users", (request, response) => {
   });
 });
 
-router.post("/login", (req, res) => {
-  const { user } = request.body;
+router.post("/login", (request, response) => {
+  const { username, password } = request.body;
   database("users")
-    .where({ username: user.username })
+    .where({ username: username })
     .first()
     .then((retrievedUser) => {
       if (!retrievedUser) throw new Error("User Not Found");
       return Promise.all([
-        bcrypt.compare(user.password, retrievedUser.password_hash),
+        bcrypt.compare(password, retrievedUser.password_hash),
         Promise.resolve(retrievedUser),
-      ]).then((results) => {
-        const areSamePasswords = results[0];
-        if (!areSamePasswords) throw new Error("wrong password!");
-        const user = results[1];
-        const payload = { username: user.username };
-        const secret = "SECRET";
-        jwt
-          .sign(payload, secret, (error, token) => {
+      ])
+        .then((results) => {
+          const areSamePasswords = results[0];
+          if (!areSamePasswords) throw new Error("wrong password!");
+          const user = results[1];
+          const payload = { username: username };
+          const secret = "SECRET";
+          jwt.sign(payload, secret, (error, token) => {
             if (error) throw new Error(error);
             response.json({ token, user });
-          })
-          .catch((error) => {
-            response.json({ message: error.message });
           });
-      });
+        })
+        .catch((error) => {
+          response.json({ message: error.message });
+        });
     });
 });
 
 function authenticate(request, response, next) {
-  const authHeader = request.getHeader("Authorization");
-  const token = authHeader.split(" ")[1];
-  const secret = "SECRET";
+  const authHeader = request.headers;
+  let token = null;
+  if (authHeader.authorization.startsWith("Bearer ")) {
+    token = authHeader.authorization.substring(7, authHeader.length);
+    token = token.trimStart();
+  }
 
   jwt.verify(token, secret, (error, payload) => {
     if (error) throw new Error("sign in error!");
