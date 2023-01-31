@@ -10,7 +10,6 @@ router.get("/someRoute", authenticate, (request, response) => {
 
 router.post("/users", (request, response) => {
   const { password, username } = request.body;
-  console.log("password", password);
   bcrypt.hash(password, 12).then((hashed_password) => {
     return database("users")
       .insert({
@@ -57,19 +56,15 @@ router.post("/login", (request, response) => {
 });
 
 function authenticate(request, response, next) {
-  const authHeader = request.headers;
-  let token = null;
-  if (authHeader.authorization.startsWith("Bearer ")) {
-    token = authHeader.authorization.substring(7, authHeader.length);
-    token = token.trimStart();
-  }
-
+  const authHeader = request.get("Authorization");
+  const token = authHeader.split(" ")[1];
+  const secret = "SECRET";
   jwt.verify(token, secret, (error, payload) => {
     if (error) throw new Error("sign in error!");
     database("users")
       .where({ username: payload.username })
       .first()
-      .then(() => {
+      .then((user) => {
         request.user = user;
         next();
       })
