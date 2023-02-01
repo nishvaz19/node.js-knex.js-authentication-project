@@ -65,6 +65,7 @@ function authenticate(request, response, next) {
       .where({ username: payload.username })
       .first()
       .then((user) => {
+        console.log("user", user);
         request.user = user;
         next();
       })
