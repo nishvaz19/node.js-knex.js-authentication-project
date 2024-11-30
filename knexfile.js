@@ -52,7 +52,3 @@ module.exports = {
     },
   },
 };
-~                                                                                                                                                                                                                                             
-~                                                                                                                                                                                                                                             
-~                                                                                                                                                                                                                                             
-"knexfile.js" 54 lines, 1832 bytes
