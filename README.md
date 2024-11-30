@@ -8,6 +8,7 @@ npx knex migrate:latest
 npx knex seed:run
 
 #run the application
+
 node index.js
 #...listening at port 6000
 
