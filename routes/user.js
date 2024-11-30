@@ -41,6 +41,7 @@ router.post("/login", (request, response) => {
         .then((results) => {
           const areSamePasswords = results[0];
           if (!areSamePasswords) throw new Error("wrong password!");
+          console.log(username + ": Successfully logged in!");
           const user = results[1];
           const payload = { username: username };
           const secret = "SECRET";
