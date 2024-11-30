@@ -14,6 +14,10 @@ module.exports = {
       database: "aadvar12309_dropescape",
       port: 5433,
     },
+    pool: {   //for nodejs API in serverless architecture solutions like functionApps 
+      min: 0,
+      max: 1
+    },
     migrations: {
       directory: __dirname + "/migrations",
       tableName: 'knex_migrations'
@@ -30,6 +34,10 @@ module.exports = {
       database: "aadvar12309_dropescape",
       port: 5433,
     },
+    pool: {   //for nodejs API in serverless architecture solutions like functionApps 
+      min: 0,
+      max: 1
+    },
     migrations: {
       directory: __dirname + "/migrations",
       tableName: 'knex_migrations'
@@ -45,6 +53,10 @@ module.exports = {
       password: "846b24f0eec574cd33f16af209d271dcc12e7d08",
       database: "aadvar12309_dropescape",
       port: 5433,
+    },
+    pool: {   //for nodejs API in serverless architecture solutions like functionApps 
+      min: 0,
+      max: 1
     },
     migrations: {
       directory: __dirname + "/migrations",
